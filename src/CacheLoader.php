@@ -94,7 +94,7 @@ class CacheLoader
 
         $this->cachedData[$cacheKey] = $latestJsonFile->sha;
         //phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
-        $this->remoteFileLoader->load($latestJsonFile->downloadUrl)->saveTo($cacheFile);
+        $this->remoteFileLoader->load($latestJsonFile->download_url)->saveTo($cacheFile);
         $this->logger->debug(
             sprintf(
                 '[CacheLoader] Missing cache entry for %s',
@@ -171,7 +171,7 @@ class CacheLoader
                     );
                     $this->cachedData[$cacheKey] = $file->sha;
                     //phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
-                    $this->remoteFileLoader->load($file->downloadUrl)->saveTo($cacheFile);
+                    $this->remoteFileLoader->load($file->download_url)->saveTo($cacheFile);
                 }
 
                 $output[$textType][$languageAlias] = $cacheFile;
