@@ -113,6 +113,13 @@ final class RaidBossListTest extends TestCase
             [
                 'dexNr' => 25,
                 'pokemonID' => 'PIKACHU',
+                'formID' => 'PIKACHU',
+                //phpcs:ignore Generic.Files.LineLength.TooLong
+                'image' => GithubLoader::ASSETS_BASE_URL . 'pm25.cJAN_2023_NOEVOLVE.icon.png',
+            ],
+            [
+                'dexNr' => 25,
+                'pokemonID' => 'PIKACHU',
                 'formID' => 'PIKACHU_FLYING_5TH_ANNIV',
                 //phpcs:ignore Generic.Files.LineLength.TooLong
                 'image' => GithubLoader::ASSETS_BASE_URL . 'pm25.fFLYING_5TH_ANNIV.icon.png',

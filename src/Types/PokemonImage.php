@@ -7,6 +7,8 @@ namespace PokemonGoApi\PogoAPI\Types;
 use Exception;
 use PokemonGoApi\PogoAPI\IO\GithubLoader;
 
+use function array_key_exists;
+use function count;
 use function preg_match;
 use function str_replace;
 
@@ -24,6 +26,34 @@ final readonly class PokemonImage
 
     public static function createFromFilePath(string $path): self
     {
+        $matches = [];
+        $result  = preg_match(
+            <<<'REGEX'
+            ~(pokemon_icon_(
+                (?<dexNr>\d{1,4})_(?<assetBundleValue>\d{2})(_(?<costume>\d{2}))?
+                |
+                (?<assetBundleSuffix>pm(?<dexNr2>\d{1,4})_(?<assetBundleValue2>\d{2})\w+?)
+             )
+             (?<isShiny>_shiny)?)
+             \.png$~x
+            REGEX,
+            $path,
+            $matches,
+        );
+
+        if ($result !== false && count($matches) > 0) {
+            return new self(
+                $matches[0],
+                (int) ($matches['dexNr'] ?: $matches['dexNr2']),
+                array_key_exists('isShiny', $matches),
+                isset($matches['assetBundleSuffix']) && $matches['assetBundleSuffix'] !== ''
+                    ? $matches['assetBundleSuffix']
+                    : null,
+                isset($matches['costume']) && $matches['costume'] !== '' ? $matches['costume'] : null,
+                (int) ($matches['assetBundleValue'] ?? $matches['assetBundleValue2'] ?? 0) === 1,
+            );
+        }
+
         $matches = [];
         $result  = preg_match(
             <<<'REGEX'

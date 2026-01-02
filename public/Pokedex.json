@@ -1166,6 +1166,10 @@
           "form": {
             "type": "string"
           },
+          "costume": {
+            "type": "string",
+            "nullable": true
+          },
           "assets": {
             "$ref": "#/components/schemas/Assets"
           },
@@ -1243,6 +1247,7 @@
         "required": [
           "id",
           "form",
+          "costume",
           "assets",
           "level",
           "shiny",
