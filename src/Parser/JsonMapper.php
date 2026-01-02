@@ -6,7 +6,6 @@ namespace PokemonGoApi\PogoAPI\Parser;
 
 use CuyZ\Valinor\Cache\FileSystemCache;
 use CuyZ\Valinor\Cache\RuntimeCache;
-use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
 
 class JsonMapper
@@ -32,7 +31,7 @@ class JsonMapper
             ->mapper()
             ->map(
                 $class,
-                Source::array($data)->camelCaseKeys(),
+                $data,
             );
     }
 }

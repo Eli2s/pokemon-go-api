@@ -10,7 +10,8 @@ class GithubFileResponse
         public readonly string $name,
         public readonly string $path,
         public readonly string $sha,
-        public readonly string $downloadUrl,
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
+        public readonly string $download_url,
     ) {
     }
 }
