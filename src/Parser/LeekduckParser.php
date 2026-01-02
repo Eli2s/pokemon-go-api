@@ -24,7 +24,6 @@ use function in_array;
 use function preg_match;
 use function similar_text;
 use function str_replace;
-use function str_starts_with;
 use function stripos;
 use function strtolower;
 use function strtoupper;
@@ -53,10 +52,15 @@ class LeekduckParser
         $raids = new RaidBossCollection();
         foreach ($raidListItems->getIterator() as $raidList) {
             assert($raidList instanceof DOMElement);
+            $isShadow = false;
+            if (in_array('shadow-raid-bosses', explode(' ', $raidList->getAttribute('class')), true)) {
+                $isShadow = true;
+            }
+
             $tiers = $this->getElementsByClass($raidList, 'tier');
 
             foreach ($tiers as $tierContainer) {
-                $raidTierLevel = $this->extractTierLevel($tierContainer);
+                $raidTierLevel = $this->extractTierLevel($tierContainer, $isShadow);
 
                 foreach ($this->getElementsByClass($tierContainer, 'card') as $cardContainer) {
                     $pokemonImage = $this->extractPokemonImage($cardContainer);
@@ -80,7 +84,7 @@ class LeekduckParser
                             $pokemonImage->getForm() ?? $pokemon->getFormId(),
                             true,
                             null,
-                            $pokemonImage->getForm(),
+                            $pokemonImage->getCostume() ?? $pokemonImage->getForm(),
                         ),
                     );
 
@@ -174,7 +178,9 @@ class LeekduckParser
                 continue;
             }
 
-            if (stripos($temp->getAttribute('class'), $className) === false) {
+            $classes = explode(' ', $temp->getAttribute('class'));
+
+            if (! in_array($className, $classes, true)) {
                 continue;
             }
 
@@ -220,16 +226,15 @@ class LeekduckParser
         return [$bossName, null];
     }
 
-    public function extractTierLevel(DOMElement $tierContainer): RaidLevel
+    public function extractTierLevel(DOMElement $tierContainer, bool $isShadow): RaidLevel
     {
-        $isShadow    = false;
-        $tierLevel   = null;
-        $header      = null;
+        $tierLevel = null;
+        $header    = null;
+
         $tierHeaders = $tierContainer->getElementsByTagName('h2');
         foreach ($tierHeaders as $header) {
-            if ($header->getAttribute('class') === 'header') {
+            if (in_array('header', explode(' ', $header->getAttribute('class')), true)) {
                 $tierLevel = $header->getAttribute('data-tier');
-                $isShadow  = str_starts_with($header->nodeValue ?? '', 'Shadow ');
                 break;
             }
         }
@@ -249,8 +254,9 @@ class LeekduckParser
             '1' => RaidLevel::Raid1,
             '3' => RaidLevel::Raid3,
             '5' => RaidLevel::Raid5,
+            'ultra wormhole' => RaidLevel::RaidUltraBeast,
             'mega' => RaidLevel::RaidMega,
-            default => throw new Exception('Can not extract raid tier level from ' . $header?->nodeValue)
+            default => throw new Exception('Can not extract raid tier level (' . $tierLevel . ') from ' . $header?->nodeValue)
         };
     }
 

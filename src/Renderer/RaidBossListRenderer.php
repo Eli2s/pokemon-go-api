@@ -56,6 +56,7 @@ final class RaidBossListRenderer
             $raidData      = [
                 'id'           => $raidBoss->getPokemon()->getId(),
                 'form'         => $raidBoss->getPokemonWithMegaFormId(),
+                'costume'      => $raidBoss->getCostumeId(),
                 'assets'        => $pokemonImage ? [
                     'image' => $pokemonImage->buildUrl(false),
                     'shinyImage' => $pokemonImage->buildUrl(true),

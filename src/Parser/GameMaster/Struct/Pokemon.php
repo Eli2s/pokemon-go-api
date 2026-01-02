@@ -273,7 +273,8 @@ final class Pokemon
         foreach ($this->pokemonImages as $pokemonImage) {
             if (
                 ($pokemonImage->getForm() === $assetBundleSuffix
-                || $pokemonImage->getForm() === $assetBundleSuffixFixed)
+                || $pokemonImage->getForm() === $assetBundleSuffixFixed
+                || ($pokemonImage->getCostume() !== null && $pokemonImage->getForm() === null))
                 && $pokemonImage->getCostume() === $costume
             ) {
                 return $pokemonImage;

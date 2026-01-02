@@ -200,7 +200,7 @@ class CacheLoader
 
     public function fetchRaidBossesFromLeekduck(): string
     {
-        $raidBossUrl = 'https://leekduck.com/boss/';
+        $raidBossUrl = 'https://leekduck.com/raid-bosses/';
         $cacheFile   = $this->getCacheDir() . 'raidlist_leekduck.html';
         $cacheKey    = 'leekduck_LastFetched';
         $cacheEntry  = $this->cachedData[$cacheKey] ?? null;
@@ -219,7 +219,7 @@ class CacheLoader
         }
 
         $this->cachedData[$cacheKey] = $lastModified;
-        $this->remoteFileLoader->load('https://leekduck.com/boss/')->saveTo($cacheFile);
+        $this->remoteFileLoader->load($raidBossUrl)->saveTo($cacheFile);
         $this->logger->debug(
             sprintf(
                 '[CacheLoader] Missing cache entry for %s',
