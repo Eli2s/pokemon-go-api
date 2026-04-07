@@ -45,8 +45,8 @@ class GithubLoader
             ],
         ],
     ];
-
-    public const string ASSETS_BASE_URL = 'https://raw.githubusercontent.com/RetroJohn86/PoGo-Unpacked-DL-Assets/main/Sprite/pm%20and%20portraits/';
+    
+    public const string ASSETS_BASE_URL = 'https://raw.githubusercontent.com/pokemon-go-api/assets/main/Pokemon/';
 
     public function __construct(
         private readonly RemoteFileLoader $remoteFileLoader,
@@ -109,8 +109,8 @@ class GithubLoader
         $baseDir = realpath(__DIR__ . '/../../') ?: '.';
         shell_exec('rm -rf ' . $baseDir . '/data/tmp/git-assets && mkdir ' . $baseDir . '/data/tmp/git-assets');
         //phpcs:ignore Generic.Files.LineLength.TooLong
-        shell_exec('git clone -q --filter=blob:none --no-checkout https://github.com/RetroJohn86/PoGo-Unpacked-DL-Assets.git ' . $baseDir . '/data/tmp/git-assets');
-        $files = shell_exec('git --git-dir ' . $baseDir . '/data/tmp/git-assets/.git ls-tree --name-only HEAD "Sprite/pm and portraits/"');
+        shell_exec('git clone -q --filter=blob:none --no-checkout https://github.com/pokemon-go-api/assets.git ' . $baseDir . '/data/tmp/git-assets');
+        $files = shell_exec('git --git-dir ' . $baseDir . '/data/tmp/git-assets/.git ls-tree --name-only HEAD "Pokemon"');
 
         $allFiles = explode("\n", (string) $files);
 
