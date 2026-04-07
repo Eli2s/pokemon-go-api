@@ -57,7 +57,7 @@ This repository uses different external systems to collect all necessary informa
 Thanks to the third parties that provide the data
 - Latest GameMaster Version: https://github.com/alexelgt/game_masters
 - Translation Files: https://github.com/sora10pls/holoholo-text/
-- Linked Images: https://github.com/RetroJohn86/PoGo-Unpacked-DL-Assets
+- Linked Images: https://github.com/pokemon-go-api/assets
 - Current List of the RaidBoss: https://leekduck.com/boss/
 - Current List of the MaxBattles: https://www.snacknap.com/max-battles
 - Calculations for the RaidBoss Difficulty: https://www.pokebattler.com/
