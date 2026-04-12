@@ -19,19 +19,49 @@ Data source: the public API at `https://pokemon-go-api.github.io/pokemon-go-api/
 - Individual Pokémon page with tabs: Visão Geral, Golpes, Evoluções
 - Current Raid Boss list grouped by tier
 - Installable as PWA — works offline (mixed mode: cache-first, revalidates online)
-- Portuguese UI labels; Pokémon names displayed in Spanish (closest available in API — see note below)
+- Portuguese UI labels and Pokémon names in Brazilian Portuguese (`names.BrazilianPortuguese`) — added to the API as part of this project
 - Auto dark/light theme following device preference
 
 ---
 
-## Language Note — Pokémon Names
+## Language Note — Pokémon Names (PT-BR added to the API)
 
-The API (`Names` schema) provides names in: English, German, French, Italian, Japanese, Korean, **Spanish** — but **not Portuguese**. Spanish Pokémon names are nearly identical to Portuguese (e.g., Bulbasaur, Charmander, Pikachu are the same in both). The app will:
+The holoholo-text translation repo (already used by this project) contains a full **Brazilian Portuguese** file at:
+- `Remote/Brazilian Portuguese/pt-br_formatted.txt`
+- `Release/Brazilian Portuguese/pt-br_formatted.txt`
 
-- Display **Spanish** names as the Pokémon name throughout the app
-- Use `names.Spanish ?? names.English` as the display name fallback
-- All **UI chrome** (labels, headings, tabs, buttons) is in Brazilian Portuguese (`pt-BR`)
-- Search also operates on the Spanish name field
+These files use the same `RESOURCE ID: pokemon_name_XXXX` / `TEXT: ...` format that the existing TranslationParser already knows how to read. The current API simply does not include PT-BR because `GithubLoader.php` and `TranslationParser.php` don't list it.
+
+**The fix requires changes to two PHP files (≈5 lines total):**
+
+### 1. `src/IO/GithubLoader.php`
+Add `BrazilianPortuguese` to both `filesRemote` and `filesApk` arrays:
+```php
+'BrazilianPortuguese' => 'Remote/Brazilian Portuguese/pt-br_formatted.txt',
+// and
+'BrazilianPortuguese' => 'Release/Brazilian Portuguese/pt-br_formatted.txt',
+```
+
+### 2. `src/Parser/TranslationParser.php`
+Add the new language constant and include it in `LANGUAGES`:
+```php
+public const BRAZILIAN_PORTUGUESE = 'BrazilianPortuguese';
+
+public const LANGUAGES = [
+    self::ENGLISH,
+    self::GERMAN,
+    self::FRENCH,
+    self::ITALIAN,
+    self::JAPANESE,
+    self::KOREAN,
+    self::SPANISH,
+    self::BRAZILIAN_PORTUGUESE,  // ← add this
+];
+```
+
+After running `composer run-script api-build` and pushing to GitHub Pages, the API will include `names.BrazilianPortuguese` on all Pokémon, moves, and types.
+
+**The PWA will use `names.BrazilianPortuguese ?? names.English` as the display name.**
 
 ---
 
@@ -105,6 +135,7 @@ interface Names {
   Japanese?: string;
   Korean?: string;
   Spanish?: string;
+  BrazilianPortuguese?: string;  // added to API as part of this project
 }
 
 // Assets
@@ -222,7 +253,7 @@ interface RaidBossResponse {
 - **Grid of cards** (2 columns mobile, 4 desktop):
   - Pokémon sprite (lazy loaded from `assets.image`)
   - Pokédex number (`#001`)
-  - Display name (`names.Spanish ?? names.English`)
+  - Display name (`names.BrazilianPortuguese ?? names.English`)
   - Type badge(s) with color
 - **Client-side pagination**: renders 50 items at a time as the user scrolls. The full list is already in memory from the cached API response — this is UI virtualization, not network lazy loading. Works fully offline.
 
@@ -376,7 +407,6 @@ pokemon-go-pwa/            ← new folder inside the repo root
 
 ## Out of Scope
 
-- Portuguese Pokémon names (not in API — Spanish used as substitute)
 - Counters/best attackers list (requires external damage calc)
 - PvP ranking systems (Great League / Ultra League tier lists)
 - User accounts or favorites (no backend)
