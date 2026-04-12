@@ -74,8 +74,26 @@ jobs:
         continue-on-error: true
         run: composer run-script convert-svg
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: pokemon-go-pwa/package-lock.json
+
+      - name: Install PWA dependencies
+        run: npm ci --legacy-peer-deps
+        working-directory: pokemon-go-pwa
+
+      - name: Build PWA
+        run: npm run build
+        working-directory: pokemon-go-pwa
+
+      - name: Copy PWA to public
+        run: cp -r pokemon-go-pwa/dist public/pokemon-go-pwa
+
       - name: Deploy to GitHub Pages
-        if: ${{ (steps.generated-data.outputs.CACHE_STATUS == 'HAS_CHANGES') && github.event_name != 'pull_request'}}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: crazy-max/ghaction-github-pages@v2
         with:
           keep_history: false
