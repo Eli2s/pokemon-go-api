@@ -33,6 +33,7 @@ class GithubLoader
                 'Japanese' => 'Remote/Japanese/ja-jp_formatted.txt',
                 'Korean' => 'Remote/Korean/ko-kr_formatted.txt',
                 'Spanish' => 'Remote/Spanish/es-es_formatted.txt',
+                'BrazilianPortuguese' => 'Remote/Brazilian Portuguese/pt-br_formatted.txt',
             ],
             'filesApk' => [
                 'English' => 'Release/English/en-us_formatted.txt',
@@ -42,6 +43,7 @@ class GithubLoader
                 'Japanese' => 'Release/Japanese/ja-jp_formatted.txt',
                 'Korean' => 'Release/Korean/ko-kr_formatted.txt',
                 'Spanish' => 'Release/Spanish/es-es_formatted.txt',
+                'BrazilianPortuguese' => 'Release/Brazilian Portuguese/pt-br_formatted.txt',
             ],
         ],
     ];

@@ -34,6 +34,8 @@ class TranslationParser
 
     public const SPANISH = 'Spanish';
 
+    public const BRAZILIAN_PORTUGUESE = 'BrazilianPortuguese';
+
     public const LANGUAGES = [
         self::ENGLISH,
         self::GERMAN,
@@ -42,6 +44,7 @@ class TranslationParser
         self::JAPANESE,
         self::KOREAN,
         self::SPANISH,
+        self::BRAZILIAN_PORTUGUESE,
     ];
 
     /** @param array<string, string> $customTranslations */
