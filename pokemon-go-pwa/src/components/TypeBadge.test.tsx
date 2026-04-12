@@ -5,7 +5,7 @@ import type { PokeType } from '../types/api'
 
 describe('TypeBadge', () => {
   it('renders PT-BR label for PokeType object', () => {
-    const type: PokeType = { type: 'pokemon_type_fire', names: { English: 'Fire' } }
+    const type: PokeType = { type: 'pokemon_type_fire', names: { English: 'Fire', German: 'Feuer' } }
     render(<TypeBadge type={type} />)
     expect(screen.getByText('Fogo')).toBeInTheDocument()
   })
@@ -16,7 +16,7 @@ describe('TypeBadge', () => {
   })
 
   it('applies correct background color for PokeType', () => {
-    const type: PokeType = { type: 'pokemon_type_water', names: { English: 'Water' } }
+    const type: PokeType = { type: 'pokemon_type_water', names: { English: 'Water', German: 'Wasser' } }
     render(<TypeBadge type={type} />)
     const badge = screen.getByText('Água')
     expect(badge).toHaveStyle({ backgroundColor: '#6890F0' })
