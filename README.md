@@ -25,6 +25,18 @@ The latest resources are available on the Github page as an JSON API with an Ope
 
 Visit https://pokemon-go-api.github.io/pokemon-go-api/ for the public available API hosted as Github Page.
 
+## Frontend database portal
+
+This repository also contains a React frontend in [`pokemon-go-pwa/`](./pokemon-go-pwa) that consumes the public API and exposes:
+
+- portal-style home page
+- pokedex navigation
+- type, generation and category indexes
+- raid boss listing
+- enriched pokemon detail pages
+
+Frontend-specific setup and decisions are documented in [`pokemon-go-pwa/README.md`](./pokemon-go-pwa/README.md).
+
 ### Use as local version
 If you want to host the API by your own you can download this Project and run the following commands to Update the files.
 ```bash

@@ -1,73 +1,104 @@
-# React + TypeScript + Vite
+# PokéGO Database Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend em React + TypeScript + Vite para consumir a API pública deste repositório e apresentar os dados como um portal de consulta de Pokémon GO em português.
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Eu criei essa interface para sair do formato de PWA simples e aproximar a experiência de um database hub:
 
-## React Compiler
+- home com visão geral do conteúdo
+- navegação por Pokédex, tipos, gerações, categorias e raids
+- página de detalhe mais rica para cada Pokémon
+- visual mais próximo de portal de consulta do que de app minimalista
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O foco agora é uso online. A camada offline/PWA foi removida do projeto.
 
-## Expanding the ESLint configuration
+## Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- React 19
+- TypeScript
+- Vite 8
+- React Router
+- TanStack Query
+- Tailwind CSS 4
+- Vitest + Testing Library
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Fonte de dados
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+O frontend consome a API pública já publicada pelo projeto:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `https://pokemon-go-api.github.io/pokemon-go-api/api/pokedex.json`
+- `https://pokemon-go-api.github.io/pokemon-go-api/api/pokedex/id/{id}.json`
+- `https://pokemon-go-api.github.io/pokemon-go-api/api/raidboss.json`
+
+## Estrutura
+
+```text
+src/
+  components/      componentes reutilizáveis
+  constants/       labels, cores e type chart
+  hooks/           integração com React Query
+  pages/           home, pokedex, raids, tipos, gerações e categorias
+  services/        chamadas HTTP
+  types/           contratos TypeScript da API
+  utils/           helpers e métricas derivadas
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Páginas
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `/`:
+  home do portal com atalhos, destaques e blocos exploratórios
+- `/pokedex`:
+  listagem principal com busca, filtro por tipo, filtro por geração e ordenação
+- `/pokemon/:id`:
+  detalhe com visão geral, matchups de tipo, golpes e evoluções
+- `/raids`:
+  chefes de raid agrupados por tier
+- `/types` e `/types/:typeKey`:
+  índice de tipos e páginas por tipo
+- `/generations` e `/generations/:generation`:
+  índice por geração
+- `/categories` e `/categories/:category`:
+  páginas editoriais para lendários, míticos, mega etc.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Decisões de implementação
+
+- Mantive a stack atual em Vite para evoluir rápido o frontend sem migrar a base inteira.
+- Passei a tratar o app como portal de conteúdo e não mais como uma tela única de listagem.
+- Adicionei cálculos derivados no frontend para enriquecer o detalhe:
+  - total de base stats
+  - melhor combinação de golpes
+  - fraquezas e resistências por tipo
+- Removi a configuração de service worker e manifest gerado, porque o uso offline deixou de ser requisito.
+
+## Desenvolvimento local
+
+Instalação:
+
+```bash
+npm install
 ```
+
+Rodar em desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Gerar build:
+
+```bash
+npm run build
+```
+
+Executar testes:
+
+```bash
+npm test
+```
+
+## Observações
+
+- O projeto usa `BrowserRouter` com `basename` configurado para publicação em GitHub Pages dentro de `pokemon-go-api/pokemon-go-pwa`.
+- Como o frontend depende da API publicada, a experiência local exige acesso online aos endpoints públicos.
+- Se eu decidir perseguir SEO forte no futuro, o próximo passo natural é migrar essa interface para SSR/SSG.

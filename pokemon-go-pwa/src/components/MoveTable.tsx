@@ -1,5 +1,5 @@
 import type { PokemonMove } from '../types/api'
-import { getDisplayName, calcDps } from '../utils/pokemon'
+import { calcDps, formatMoveEnergy, getDisplayName } from '../utils/pokemon'
 import TypeBadge from './TypeBadge'
 
 interface Props {
@@ -11,46 +11,51 @@ interface Props {
 
 export default function MoveTable({ moves, primaryType, secondaryType, title }: Props) {
   return (
-    <div>
-      <h3 className="mb-2 font-semibold text-gray-700 dark:text-gray-300">{title}</h3>
+    <div className="space-y-3">
+      <h3 className="text-lg font-semibold text-white">{title}</h3>
       {moves.length === 0 ? (
-        <p className="text-sm text-gray-400">Nenhum ataque disponível</p>
+        <p className="text-sm text-slate-400">Nenhum ataque disponível</p>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 text-left text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
-              <th className="pb-1 font-medium">Nome</th>
-              <th className="pb-1 font-medium">Tipo</th>
-              <th className="pb-1 text-right font-medium">Poder</th>
-              <th className="pb-1 text-right font-medium">DPS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {moves.map((move) => {
-              const isStab =
-                move.type.type === primaryType || move.type.type === secondaryType
-              const dps = calcDps(move, primaryType, secondaryType)
-              return (
-                <tr
-                  key={move.id}
-                  className={`border-b border-gray-100 dark:border-gray-800 ${isStab ? 'font-semibold' : ''}`}
-                >
-                  <td className="py-1.5">
-                    {getDisplayName(move.names)}
-                    {isStab && (
-                      <span className="ml-1 text-xs text-yellow-500" title="STAB">★</span>
-                    )}
-                  </td>
-                  <td className="py-1.5">
-                    <TypeBadge type={move.type} />
-                  </td>
-                  <td className="py-1.5 text-right">{move.power}</td>
-                  <td className="py-1.5 text-right">{dps.toFixed(2)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto rounded-[1.5rem] border border-white/8 bg-slate-950/50">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="border-b border-white/8 text-left text-xs uppercase tracking-[0.18em] text-slate-500">
+                <th className="px-4 py-3 font-medium">Golpe</th>
+                <th className="px-4 py-3 font-medium">Tipo</th>
+                <th className="px-4 py-3 text-right font-medium">Poder</th>
+                <th className="px-4 py-3 text-right font-medium">Energia</th>
+                <th className="px-4 py-3 text-right font-medium">DPS</th>
+                <th className="px-4 py-3 text-right font-medium">PvP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {moves.map((move) => {
+                const isStab = move.type.type === primaryType || move.type.type === secondaryType
+                const dps = calcDps(move, primaryType, secondaryType)
+
+                return (
+                  <tr key={move.id} className="border-b border-white/6 text-slate-300 last:border-b-0">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className={isStab ? 'font-semibold text-white' : 'font-medium'}>{getDisplayName(move.names)}</span>
+                        {isStab && <span className="rounded-full bg-yellow-400/15 px-2 py-0.5 text-[11px] font-semibold text-yellow-300">STAB</span>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <TypeBadge type={move.type} />
+                    </td>
+                    <td className="px-4 py-3 text-right">{move.power}</td>
+                    <td className="px-4 py-3 text-right">{formatMoveEnergy(move)}</td>
+                    <td className="px-4 py-3 text-right">{dps.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right">
+                      {move.combat ? `${move.combat.power}/${move.combat.turns}T` : '—'}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
