@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build && powershell -NoProfile -Command \"Copy-Item ../docs/pokemon-go-pwa/index.html ../docs/pokemon-go-pwa/404.html -Force\"",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

@@ -4,6 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   base: '/pokemon-go-api/pokemon-go-pwa/',
+  build: {
+    outDir: '../docs/pokemon-go-pwa',
+    emptyOutDir: true,
+  },
   plugins: [
     react(),
     tailwindcss(),

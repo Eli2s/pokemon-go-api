@@ -1,0 +1,1 @@
+import{E as e,n as t}from"./api-IMA3qEAA.js";function n(){return e({queryKey:[`pokedex`],queryFn:t,staleTime:1e3*60*60})}export{n as t};
