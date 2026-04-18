@@ -22,9 +22,15 @@ const STAT_MAX = { stamina: 500, attack: 400, defense: 400 }
 
 export default function PokemonDetail() {
   const { id } = useParams<{ id: string }>()
-  const { data: pokemon, isLoading, isError } = usePokemon(id ?? '')
   const { data: pokedex } = usePokedex()
   const [tab, setTab] = useState<Tab>('overview')
+
+  const hasKnownPokemon = useMemo(() => {
+    if (!id || !pokedex) return true
+    return pokedex.some((entry) => entry.id === id)
+  }, [id, pokedex])
+
+  const { data: pokemon, isLoading, isError } = usePokemon(id ?? '', hasKnownPokemon)
 
   const relatedPokemon = useMemo(() => {
     if (!pokemon || !pokedex) return []
@@ -33,12 +39,13 @@ export default function PokemonDetail() {
       .slice(0, 4)
   }, [pokedex, pokemon])
 
-  if (isLoading) return <p className="py-20 text-center text-slate-400">Carregando detalhe do Pokémon...</p>
-  if (isError || !pokemon) {
+  if (isLoading) return <p className="py-20 text-center text-slate-400">Carregando detalhe do Pokemon...</p>
+
+  if (!hasKnownPokemon || isError || !pokemon) {
     return (
       <div className="py-20 text-center">
-        <p className="text-red-300">Pokémon não encontrado.</p>
-        <Link to="/pokedex" className="mt-3 inline-block text-sm text-red-200 underline">Voltar para a Pokédex</Link>
+        <p className="text-red-300">Pokemon nao encontrado.</p>
+        <Link to="/pokedex" className="mt-3 inline-block text-sm text-red-200 underline">Voltar para a Pokedex</Link>
       </div>
     )
   }
@@ -64,7 +71,7 @@ export default function PokemonDetail() {
   return (
     <div className="space-y-8">
       <section className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 lg:p-8">
-        <Link to="/pokedex" className="text-sm text-slate-400 transition hover:text-slate-200">← Voltar para a Pokédex</Link>
+        <Link to="/pokedex" className="text-sm text-slate-400 transition hover:text-slate-200">← Voltar para a Pokedex</Link>
 
         <div className="mt-5 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-4">
@@ -79,8 +86,18 @@ export default function PokemonDetail() {
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               <InfoBox label="Base stats" value={String(totalStats)} />
-              <InfoBox label="Melhor moveset" value={bestMoveset.quick && bestMoveset.charged ? `${getDisplayName(bestMoveset.quick.names)} + ${getDisplayName(bestMoveset.charged.names)}` : '—'} />
-              <InfoBox label="Formas especiais" value={`${pokemon.hasMegaEvolution ? 'Mega ' : ''}${pokemon.hasGigantamaxEvolution ? 'Gigantamax' : ''}`.trim() || 'Nenhuma'} />
+              <InfoBox
+                label="Melhor moveset"
+                value={
+                  bestMoveset.quick && bestMoveset.charged
+                    ? `${getDisplayName(bestMoveset.quick.names)} + ${getDisplayName(bestMoveset.charged.names)}`
+                    : '-'
+                }
+              />
+              <InfoBox
+                label="Formas especiais"
+                value={`${pokemon.hasMegaEvolution ? 'Mega ' : ''}${pokemon.hasGigantamaxEvolution ? 'Gigantamax' : ''}`.trim() || 'Nenhuma'}
+              />
             </div>
           </div>
 
@@ -99,9 +116,9 @@ export default function PokemonDetail() {
       </section>
 
       <div className="flex flex-wrap gap-2">
-        <button className={tabClass('overview')} onClick={() => setTab('overview')}>Visão geral</button>
+        <button className={tabClass('overview')} onClick={() => setTab('overview')}>Visao geral</button>
         <button className={tabClass('moves')} onClick={() => setTab('moves')}>Ataques</button>
-        <button className={tabClass('evolutions')} onClick={() => setTab('evolutions')}>Evoluções</button>
+        <button className={tabClass('evolutions')} onClick={() => setTab('evolutions')}>Evolucoes</button>
       </div>
 
       {tab === 'overview' && (
@@ -115,7 +132,7 @@ export default function PokemonDetail() {
                 <StatBar label="HP" value={pokemon.stats.stamina} max={STAT_MAX.stamina} />
               </div>
             ) : (
-              <p className="mt-4 text-slate-400">Stats indisponíveis.</p>
+              <p className="mt-4 text-slate-400">Stats indisponiveis.</p>
             )}
           </section>
 
@@ -135,7 +152,7 @@ export default function PokemonDetail() {
               </div>
 
               <div>
-                <p className="text-sm uppercase tracking-[0.18em] text-slate-500">Resistências</p>
+                <p className="text-sm uppercase tracking-[0.18em] text-slate-500">Resistencias</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {typeMatchups.resistances.slice(0, 8).map((entry) => (
                     <div key={entry.type} className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-2">
@@ -151,8 +168,8 @@ export default function PokemonDetail() {
           <section className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 lg:col-span-2">
             <div className="flex items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-semibold text-white">Leitura rápida</h2>
-                <p className="mt-2 text-slate-400">Resumo útil para raids e exploração no portal.</p>
+                <h2 className="text-2xl font-semibold text-white">Leitura rapida</h2>
+                <p className="mt-2 text-slate-400">Resumo util para raids e exploracao no portal.</p>
               </div>
             </div>
 
@@ -162,7 +179,7 @@ export default function PokemonDetail() {
                 body={
                   bestMoveset.quick && bestMoveset.charged
                     ? `${getDisplayName(bestMoveset.quick.names)} + ${getDisplayName(bestMoveset.charged.names)}`
-                    : 'Sem combinação calculada'
+                    : 'Sem combinacao calculada'
                 }
               />
               <InsightCard
@@ -181,10 +198,10 @@ export default function PokemonDetail() {
       {tab === 'moves' && (
         <section className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6">
           <div className="space-y-6">
-            <MoveTable moves={quickMoves} primaryType={primaryType} secondaryType={secondaryType} title="Ataques rápidos" />
+            <MoveTable moves={quickMoves} primaryType={primaryType} secondaryType={secondaryType} title="Ataques rapidos" />
             <MoveTable moves={chargedMoves} primaryType={primaryType} secondaryType={secondaryType} title="Ataques carregados" />
             {eliteQuick.length > 0 && (
-              <MoveTable moves={eliteQuick} primaryType={primaryType} secondaryType={secondaryType} title="Ataques rápidos Elite" />
+              <MoveTable moves={eliteQuick} primaryType={primaryType} secondaryType={secondaryType} title="Ataques rapidos Elite" />
             )}
             {eliteCharged.length > 0 && (
               <MoveTable moves={eliteCharged} primaryType={primaryType} secondaryType={secondaryType} title="Ataques carregados Elite" />
@@ -200,7 +217,7 @@ export default function PokemonDetail() {
             {pokemon.evolutions.length > 0 ? (
               <EvolutionChain evolutions={pokemon.evolutions} pokedex={pokedex} />
             ) : (
-              <p className="text-slate-400">Este Pokémon não possui evoluções listadas.</p>
+              <p className="text-slate-400">Este Pokemon nao possui evolucoes listadas.</p>
             )}
           </div>
         </section>
