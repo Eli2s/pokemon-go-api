@@ -1,0 +1,1 @@
+import{E as e,i as t}from"./api-IMA3qEAA.js";function n(){return e({queryKey:[`raids`],queryFn:t,staleTime:1e3*60*60})}export{n as t};
